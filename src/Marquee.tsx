@@ -27,31 +27,49 @@ const Content = styled.div`
 
 interface MarqueeProps {
   gap?: number;
-  duration: number;
+  speed: number;
 }
 
-interface MarqueeState {}
+interface MarqueeState {
+  scroll: boolean;
+  width: number;
+}
 
 class Marquee extends React.Component<MarqueeProps, MarqueeState> {
   contentElement?: HTMLDivElement;
   outerElement?: HTMLDivElement;
-  width?: number;
 
   constructor(props: MarqueeProps) {
     super(props);
+
+    this.state = {
+      scroll: false,
+      width: 0,
+    };
 
     this.setupContentRef = this.setupContentRef.bind(this);
     this.setupOuterRef = this.setupOuterRef.bind(this);
   }
 
   componentDidMount() {
-    if (this.contentElement && this.outerElement) {
-      const contentWidth = this.contentElement.offsetWidth;
+    this.updateScrollState();
+  }
 
-      const { gap } = this.props;
+  componentDidUpdate() {
+    this.updateScrollState();
+  }
 
-      this.width = contentWidth + (gap || 0);
-    }
+  shouldComponentUpdate(
+    nextProps: MarqueeProps & { children?: React.ReactNode },
+    nextState: MarqueeState
+  ) {
+    return (
+      this.props.gap !== nextProps.gap ||
+      this.props.speed !== nextProps.speed ||
+      this.props.children !== nextProps.children ||
+      this.state.scroll !== nextState.scroll ||
+      this.state.width !== nextState.width
+    );
   }
 
   setupContentRef(element: HTMLDivElement) {
@@ -62,28 +80,43 @@ class Marquee extends React.Component<MarqueeProps, MarqueeState> {
     this.outerElement = element;
   }
 
+  updateScrollState() {
+    if (this.contentElement && this.outerElement) {
+      const contentWidth = this.contentElement.offsetWidth;
+      const outerWidth = this.outerElement.offsetWidth;
+
+      if (outerWidth < contentWidth) {
+        this.setState({ scroll: true, width: contentWidth });
+        return;
+      }
+
+      if (outerWidth >= contentWidth) {
+        this.setState({ scroll: false });
+        return;
+      }
+    }
+  }
+
   render() {
-    const { gap, duration } = this.props;
+    const { gap, speed } = this.props;
+
+    const style = this.state.scroll
+      ? {
+          paddingRight: gap && `${gap}px`,
+          animationDuration: `${(this.state.width + (gap || 0)) / speed}s`,
+        }
+      : {
+          animation: 'none',
+        };
 
     return (
       <Outer ref={this.setupOuterRef}>
-        <Content
-          ref={this.setupContentRef}
-          style={{
-            paddingRight: gap && `${gap}px`,
-            animationDuration: `${duration}s`,
-          }}
-        >
+        <Content ref={this.setupContentRef} style={style}>
           {this.props.children}
         </Content>
-        <Content
-          style={{
-            paddingRight: gap && `${gap}px`,
-            animationDuration: `${duration}s`,
-          }}
-        >
-          {this.props.children}
-        </Content>
+        {this.state.scroll && (
+          <Content style={style}>{this.props.children}</Content>
+        )}
       </Outer>
     );
   }
