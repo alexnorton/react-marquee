@@ -1,21 +1,21 @@
 workflow "Build and deploy" {
   on = "push"
-  resolves = ["docker://node:10-alpine"]
+  resolves = ["Build", "Deploy"]
 }
 
 action "Install" {
-  uses = "docker://node:10-alpine"
+  uses = "./.github"
   runs = "yarn"
 }
 
 action "Build" {
-  uses = "docker://node:10-alpine"
+  uses = "./.github"
   needs = ["Install"]
   runs = "yarn build"
 }
 
-action "docker://node:10-alpine" {
-  uses = "docker://node:10-alpine"
+action "Deploy" {
+  uses = "./.github"
   needs = ["Build"]
   runs = "yarn deploy"
   secrets = ["GITHUB_TOKEN"]
