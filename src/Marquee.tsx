@@ -84,12 +84,15 @@ class Marquee extends React.Component<MarqueeProps, MarqueeState> {
       const contentWidth = this.contentElement.offsetWidth;
       const outerWidth = this.outerElement.offsetWidth;
 
-      if (outerWidth < contentWidth) {
+      const totalWidth =
+        contentWidth - ((this.state.scroll && this.props.gap) || 0);
+
+      if (outerWidth < totalWidth) {
         this.setState({ scroll: true, width: contentWidth });
         return;
       }
 
-      if (outerWidth >= contentWidth) {
+      if (outerWidth >= totalWidth) {
         this.setState({ scroll: false });
         return;
       }
