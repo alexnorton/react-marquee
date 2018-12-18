@@ -15,6 +15,24 @@ const Container = styled.div`
   margin-left: auto;
   margin-right: auto;
   width: 800px;
+
+  input {
+    width: 100%;
+    font-size: 20px;
+    margin-top: 8px;
+  }
+
+  > div {
+    margin-bottom: 16px;
+  }
+`;
+
+const Marquees = styled.div`
+  margin-bottom: 16px;
+
+  > div {
+    margin-bottom: 16px;
+  }
 `;
 
 interface MarqueeContainerProps {
@@ -26,6 +44,11 @@ const MarqueeContainer = styled.div<MarqueeContainerProps>`
   margin-right: auto;
   width: ${({ width }) => width}px;
   font-size: 32px;
+  border: 1px solid #666;
+
+  &:last-child {
+    margin-bottom: 32px;
+  }
 `;
 
 class App extends React.Component<AppProps, AppState> {
@@ -34,7 +57,7 @@ class App extends React.Component<AppProps, AppState> {
 
     this.state = {
       text:
-        'Hello!Note that the development build is not optimized. To create a production build, use yarn build.',
+        "Missing Data - Today's analytics continue to arrive slowly, and will remain incomplete for the next hour or so. This data is from 10:23am.",
       speed: 60,
       gap: 30,
     };
@@ -62,29 +85,39 @@ class App extends React.Component<AppProps, AppState> {
     return (
       <Container>
         <h1>React Marquee</h1>
-        <input type="text" value={text} onChange={this.handleTextChange} />
-        <input
-          type="range"
-          value={speed}
-          min={1}
-          max={500}
-          onChange={this.handleSpeedChange}
-        />
-        <input
-          type="range"
-          value={gap}
-          min={0}
-          max={100}
-          onChange={this.handleGapChange}
-        />
-
-        {[200, 400, 600, 800].map((width, index) => (
-          <MarqueeContainer width={width} key={index}>
-            <Marquee gap={gap} speed={speed}>
-              {text}
-            </Marquee>
-          </MarqueeContainer>
-        ))}
+        <Marquees>
+          {[200, 400, 600, 800].map((width, index) => (
+            <MarqueeContainer width={width} key={index}>
+              <Marquee gap={gap} speed={speed}>
+                {text}
+              </Marquee>
+            </MarqueeContainer>
+          ))}
+        </Marquees>
+        <div>
+          <strong>Content:</strong>
+          <input type="text" value={text} onChange={this.handleTextChange} />
+        </div>
+        <div>
+          <strong>Speed:</strong> {speed} pixels/second
+          <input
+            type="range"
+            value={speed}
+            min={1}
+            max={500}
+            onChange={this.handleSpeedChange}
+          />
+        </div>
+        <div>
+          <strong>Gap:</strong> {gap}px
+          <input
+            type="range"
+            value={gap}
+            min={0}
+            max={200}
+            onChange={this.handleGapChange}
+          />
+        </div>
       </Container>
     );
   }

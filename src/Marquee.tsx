@@ -3,7 +3,6 @@ import styled, { keyframes } from 'styled-components';
 
 const Outer = styled.div`
   width: 100%;
-  border: 3px solid #333;
   overflow: hidden;
   white-space: nowrap;
 `;
