@@ -56,8 +56,7 @@ class App extends React.Component<AppProps, AppState> {
     super(props);
 
     this.state = {
-      text:
-        "Missing Data - Today's analytics continue to arrive slowly, and will remain incomplete for the next hour or so. This data is from 10:23am.",
+      text: 'Champagne for my real friends, real pain for my sham friends',
       speed: 60,
       gap: 30,
     };
