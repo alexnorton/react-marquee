@@ -1,5 +1,9 @@
 FROM node:10-alpine
 
+ENV HOME /github/home
+
 RUN apk update && apk add git
 
-RUN git config --global user.email "anonymous@example.com" && git config --global user.name "GitHub Action"
+RUN mkdir -p /github/home \
+  && git config --global user.email "anonymous@example.com" \
+  && git config --global user.name "GitHub Action"
