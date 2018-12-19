@@ -18,5 +18,5 @@ action "Deploy" {
   uses = "./.github"
   needs = ["Build"]
   runs = "yarn deploy"
-  secrets = ["GH_TOKEN"]
+  secrets = ["GITHUB_TOKEN"]
 }
