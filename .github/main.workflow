@@ -19,4 +19,7 @@ action "Deploy" {
   needs = ["Build"]
   runs = "yarn deploy"
   secrets = ["GITHUB_TOKEN"]
+  env = {
+    HOME = "/root"
+  }
 }
